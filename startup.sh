@@ -36,3 +36,39 @@ sudo apt install golang-go
 # Install Rust & Cargo
 curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh
 source $HOME/.cargo/env
+
+
+############################################################
+# 📝 Ghostwriter
+############################################################
+# Prerequisite: Install Docker Compose (currently istalled with Mythic)
+
+# Install Ghostwriter (Markdown editor for documentation/notes)
+git clone https://github.com/GhostManager/Ghostwriter.git
+cd Ghostwriter
+./ghostwriter-cli install
+
+# Create a notes folder inside Mythic
+mkdir -p ~/Mythic/ghostwriter_notes
+
+# (Optional) Create a starter README
+echo "# Mythic Operation Notes" > ~/Mythic/ghostwriter_notes/README.md
+
+# Alias to startup Ghostwriter with Mythic
+# echo 'alias mythic-notes="ghostwriter ~/Mythic/ghostwriter_notes/README.md &"' >> ~/.bashrc
+# source ~/.bashrc
+
+############################################################
+# 🩸 BloodHound CE
+############################################################
+# Prerequisite: Install Docker Compose (currently istalled with Mythic)
+
+# Download the altest release of the Bloodhound CLI
+wget https://github.com/SpecterOps/bloodhound-cli/releases/latest/download/bloodhound-cli-linux-amd64.tar.gz
+
+# Next, unpack the file
+tar -xvzf bloodhound-cli-linux-amd64.tar.gz
+
+# Install bloodhound ce via the Bloodhound CLI
+./bloodhound-cli install
+
