@@ -1,4 +1,10 @@
 ############################################################
+# Vim
+############################################################
+
+sudo apt install vim
+
+############################################################
 # 🚀 Mythic
 ############################################################
 
@@ -64,10 +70,10 @@ echo "# Mythic Operation Notes" > ~/Mythic/ghostwriter_notes/README.md
 # Prerequisite: Install Docker Compose (currently istalled with Mythic)
 
 # Download the altest release of the Bloodhound CLI
-wget https://github.com/SpecterOps/bloodhound-cli/releases/latest/download/bloodhound-cli-linux-amd64.tar.gz
+wget https://github.com/SpecterOps/bloodhound-cli/releases/latest/download/bloodhound-cli-linux-arm64.tar.gz
 
 # Next, unpack the file
-tar -xvzf bloodhound-cli-linux-amd64.tar.gz
+tar -xvzf bloodhound-cli-linux-arm64.tar.gz
 
 # Install bloodhound ce via the Bloodhound CLI
 ./bloodhound-cli install
@@ -79,4 +85,3 @@ tar -xvzf bloodhound-cli-linux-amd64.tar.gz
 # cp .env.example .env
 # sed -i 's/BLOODHOUND_HOST=127.0.0.1/BLOODHOUND_HOST=0.0.0.0/' .env
 # sudo docker compose up 
-
