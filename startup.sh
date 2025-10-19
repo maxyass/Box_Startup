@@ -34,6 +34,8 @@ sudo sed -i 's/REBUILD_ON_START="true"/REBUILD_ON_START="false"/g' .env
 # Install Go (needed for some agents)
 sudo apt install golang-go
 
+cd ..
+
 
 ############################################################
 # 🪡 Rusty Needle
@@ -63,6 +65,8 @@ echo "# Mythic Operation Notes" > ~/Mythic/ghostwriter_notes/README.md
 # Alias to startup Ghostwriter with Mythic
 # echo 'alias mythic-notes="ghostwriter ~/Mythic/ghostwriter_notes/README.md &"' >> ~/.bashrc
 # source ~/.bashrc
+
+cd ..
 
 ############################################################
 # 🩸 BloodHound CE
