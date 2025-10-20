@@ -69,8 +69,10 @@ cd Ghostwriter
 ./ghostwriter-cli-linux install
 sudo sed -i "s/^HASURA_GRAPHQL_SERVER_PORT='8080'/HASURA_GRAPHQL_SERVER_PORT='8078'/" .env
 
-# Allow Ghostwriter to be accessible externally by a given IP
-#sudo ./ghostwriter-cli-linux config allowhost <YOUR DOMAIN NAME OR IP>
+# Allow Ghostwriter to be accessible externally by any IP on the network
+sudo ./ghostwriter-cli-linux config allowhost 0.0.0.0
+# Allow the Host computer to be able to access the django server (I think - vandey told me to do this)
+sudo ./ghostwriter-cli-linux config allowhost $(hostname -I | awk '{print $1}')
 
 # Create a notes folder inside Mythic
 mkdir -p ~/Mythic/ghostwriter_notes
@@ -93,15 +95,11 @@ cd ..
 ############################################################
 # Prerequisite: Install Docker Compose (currently istalled with Mythic)
 
-# # Download the altest release of the Bloodhound CLI
-# wget https://github.com/SpecterOps/bloodhound-cli/releases/latest/download/bloodhound-cli-linux-arm64.tar.gz
-# # Next, unpack the file
-# tar -xvzf bloodhound-cli-linux-arm64.tar.gz
-
 # Download the altest release of the Bloodhound CLI
 wget https://github.com/SpecterOps/bloodhound-cli/releases/latest/download/bloodhound-cli-linux-amd64.tar.gz
 # Next, unpack the file
 tar -xvzf bloodhound-cli-linux-amd64.tar.gz
+sudo rm bloodhound-cli-linux-arm64.tar.gz
 
 # Install bloodhound ce via the Bloodhound CLI
 ./bloodhound-cli install
@@ -119,7 +117,7 @@ EOF
 # Set Blood to bind to all interfaces and listen on port 8082
 sudo ./bloodhound-cli config set bind_addr 0.0.0.0:8082
 sudo ./bloodhound-cli config set root_url http://127.0.0.1:8082
-sudo sed -i 's|\${BLOODHOUND_HOST:-127.0.0.1}:\${BLOODHOUND_PORT:-8080}:8080}|\${BLOODHOUND_HOST:-127.0.0.1}:\${BLOODHOUND_PORT:-8082}:8082|' /root/.config/bloodhound/docker-compose.yml
+sudo sed -i 's|\${BLOODHOUND_HOST:-127.0.0.1}:\${BLOODHOUND_PORT:-8080}:8080}|\${BLOODHOUND_HOST:-0.0.0.0}:\${BLOODHOUND_PORT:-8082}:8082|' /root/.config/bloodhound/docker-compose.yml
 
 # Bring the containers down, force an update to the docker-compose.yml and then bring the containers back up
 sudo ./bloodhound-cli down
