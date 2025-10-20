@@ -5,6 +5,12 @@
 sudo apt install vim
 
 ############################################################
+# Make
+############################################################
+
+sudo apt install make
+
+############################################################
 # 🚀 Mythic
 ############################################################
 
@@ -13,7 +19,7 @@ git clone https://github.com/its-a-feature/Mythic --depth 1
 cd Mythic/
 
 # Install Docker & dependencies
-./install_docker_ubuntu.sh
+sudo ./install_docker_ubuntu.sh
 sudo make
 curl -fsSL https://download.docker.com/linux/debian/gpg | sudo tee /etc/apt/trusted.gpg.d/docker.asc
 sudo apt install docker-ce docker-ce-cli containerd.io
@@ -54,7 +60,8 @@ source $HOME/.cargo/env
 # Install Ghostwriter (Markdown editor for documentation/notes)
 git clone https://github.com/GhostManager/Ghostwriter.git
 cd Ghostwriter
-./ghostwriter-cli install
+./ghostwriter-cli-linux install
+#sudo sed -i 's|\${GRAPHQL_HOST:-127.0.0.1}:\${GRAPHQL_PORT:-8080}:8080}|\${GRAPHQL_HOST:-127.0.0.1}:\${GRAPHQL_PORT:-8082}:8082|' /root/.config/ghostwriter/docker-compose.yml
 
 # Create a notes folder inside Mythic
 mkdir -p ~/Mythic/ghostwriter_notes
@@ -91,6 +98,17 @@ export BLOODHOUND_PASSWORD="$(
 )"
 EOF
 .~/.bashrc
+
+# Set Blood to bind to all interfaces and listen on port 8082
+sudo ./bloodhound-cli config set bind_addr 0.0.0.0:8082
+sudo ./bloodhound-cli config set root_url http://127.0.0.1:8082
+sudo sed -i 's|\${BLOODHOUND_HOST:-127.0.0.1}:\${BLOODHOUND_PORT:-8080}:8080}|\${BLOODHOUND_HOST:-127.0.0.1}:\${BLOODHOUND_PORT:-8082}:8082|' /root/.config/bloodhound/docker-compose.yml
+
+# Bring the containers down, force an update to the docker-compose.yml and then bring the containers back up
+sudo ./bloodhound-cli down
+sudo ./bloodhound-cli update
+sudo ./bloodhound-cli up
+
 
 # Make Bloodhound accessible externally by modifying the .env file - NOT FUNCTIONAL YET
 #bloodhound-cli --server http://0.0.0.0:8080 --user neo4j --password $BLOODHOUND_PASSWORD
