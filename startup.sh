@@ -38,6 +38,10 @@ sudo sed -i 's/restart: always/restart: on-failure:10/g' docker-compose.yml
 sudo sed -i 's/REBUILD_ON_START="true"/REBUILD_ON_START="false"/g' .env
 sudo sed -i 's/HASURA_PORT="8080"/HASURA_PORT="8079"/' .env # Set Hasura to use port 8079 instead of 8080
 
+# Make the changes to the .env take effect
+sudo ./mythic-cli down
+sudo ./mythic-cli up
+
 # Install Go (needed for some agents)
 sudo apt install golang-go
 
@@ -63,7 +67,10 @@ source $HOME/.cargo/env
 git clone https://github.com/GhostManager/Ghostwriter.git
 cd Ghostwriter
 ./ghostwriter-cli-linux install
-#sudo sed -i 's|\${GRAPHQL_HOST:-127.0.0.1}:\${GRAPHQL_PORT:-8080}:8080}|\${GRAPHQL_HOST:-127.0.0.1}:\${GRAPHQL_PORT:-8081}:8081|' /root/.config/ghostwriter/docker-compose.yml
+sudo sed -i "s/^HASURA_GRAPHQL_SERVER_PORT='8080'/HASURA_GRAPHQL_SERVER_PORT='8078'/" .env
+
+# Allow Ghostwriter to be accessible externally by a given IP
+#sudo ./ghostwriter-cli-linux config allowhost <YOUR DOMAIN NAME OR IP>
 
 # Create a notes folder inside Mythic
 mkdir -p ~/Mythic/ghostwriter_notes
@@ -75,6 +82,10 @@ echo "# Mythic Operation Notes" > ~/Mythic/ghostwriter_notes/README.md
 # echo 'alias mythic-notes="ghostwriter ~/Mythic/ghostwriter_notes/README.md &"' >> ~/.bashrc
 # source ~/.bashrc
 
+# Make the changes to the .env take effect
+sudo ./ghostwriter-cli-linux down
+sudo ./ghostwriter-cli-linux up
+
 cd ..
 
 ############################################################
@@ -82,11 +93,15 @@ cd ..
 ############################################################
 # Prerequisite: Install Docker Compose (currently istalled with Mythic)
 
-# Download the altest release of the Bloodhound CLI
-wget https://github.com/SpecterOps/bloodhound-cli/releases/latest/download/bloodhound-cli-linux-arm64.tar.gz
+# # Download the altest release of the Bloodhound CLI
+# wget https://github.com/SpecterOps/bloodhound-cli/releases/latest/download/bloodhound-cli-linux-arm64.tar.gz
+# # Next, unpack the file
+# tar -xvzf bloodhound-cli-linux-arm64.tar.gz
 
+# Download the altest release of the Bloodhound CLI
+wget https://github.com/SpecterOps/bloodhound-cli/releases/latest/download/bloodhound-cli-linux-amd64.tar.gz
 # Next, unpack the file
-tar -xvzf bloodhound-cli-linux-arm64.tar.gz
+tar -xvzf bloodhound-cli-linux-amd64.tar.gz
 
 # Install bloodhound ce via the Bloodhound CLI
 ./bloodhound-cli install
