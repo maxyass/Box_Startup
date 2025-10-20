@@ -36,6 +36,7 @@ sudo ./mythic-cli install github https://github.com/MythicAgents/merlin
 # Adjust Docker restart policy & rebuild settings
 sudo sed -i 's/restart: always/restart: on-failure:10/g' docker-compose.yml
 sudo sed -i 's/REBUILD_ON_START="true"/REBUILD_ON_START="false"/g' .env
+sudo sed -i 's/HASURA_PORT="8080"/HASURA_PORT="8079"/' .env # Set Hasura to use port 8079 instead of 8080
 
 # Install Go (needed for some agents)
 sudo apt install golang-go
@@ -51,6 +52,7 @@ cd ..
 curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh
 source $HOME/.cargo/env
 
+## ADD CARGO BUILD GRAB HERE
 
 ############################################################
 # 📝 Ghostwriter
@@ -61,7 +63,7 @@ source $HOME/.cargo/env
 git clone https://github.com/GhostManager/Ghostwriter.git
 cd Ghostwriter
 ./ghostwriter-cli-linux install
-#sudo sed -i 's|\${GRAPHQL_HOST:-127.0.0.1}:\${GRAPHQL_PORT:-8080}:8080}|\${GRAPHQL_HOST:-127.0.0.1}:\${GRAPHQL_PORT:-8082}:8082|' /root/.config/ghostwriter/docker-compose.yml
+#sudo sed -i 's|\${GRAPHQL_HOST:-127.0.0.1}:\${GRAPHQL_PORT:-8080}:8080}|\${GRAPHQL_HOST:-127.0.0.1}:\${GRAPHQL_PORT:-8081}:8081|' /root/.config/ghostwriter/docker-compose.yml
 
 # Create a notes folder inside Mythic
 mkdir -p ~/Mythic/ghostwriter_notes
