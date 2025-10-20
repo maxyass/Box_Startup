@@ -82,6 +82,19 @@ tar -xvzf bloodhound-cli-linux-arm64.tar.gz
 # Install bloodhound ce via the Bloodhound CLI
 ./bloodhound-cli install
 
+# Save the Bloodhound default password as an evironment variable "BLOODHOUND_PASSWORD"
+cat >> ~/.bashrc <<'EOF'
+export BLOODHOUND_PASSWORD="$(
+    ./bloodhound-cli config get default_password \
+    | awk '/DEFAULT_PASSWORD/ {print $NF}' \
+    | tr -d '\r\n'
+)"
+EOF
+.~/.bashrc
+
+# Make Bloodhound accessible externally by modifying the .env file - NOT FUNCTIONAL YET
+#bloodhound-cli --server http://0.0.0.0:8080 --user neo4j --password $BLOODHOUND_PASSWORD
+
 # Alternative manual installation method (if needed) 
 # git clone https://github.com/SpecterOps/BloodHound.git
 # cd BloodHound/examples/docker-compose
