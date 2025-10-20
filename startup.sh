@@ -37,10 +37,16 @@ sudo ./mythic-cli install github https://github.com/MythicAgents/merlin
 sudo sed -i 's/restart: always/restart: on-failure:10/g' docker-compose.yml
 sudo sed -i 's/REBUILD_ON_START="true"/REBUILD_ON_START="false"/g' .env
 sudo sed -i 's/HASURA_PORT="8080"/HASURA_PORT="8079"/' .env # Set Hasura to use port 8079 instead of 8080
+sudo ./mythic-cli config set rabbitmq_bind_localhost_only false # Make the Mythic Server externally accessible
+sudo ./mythic-cli config set mythic_server_bind_localhost_only false # Make the Mythic Server externally accessible
 
 # Make the changes to the .env take effect
-sudo ./mythic-cli down
-sudo ./mythic-cli up
+sudo ./mythic-cli stop
+sudo ./mythic-cli start
+
+# Save the Mythic admin default password as an evironment variable "MYTHIC_PASSWORD"
+echo "export MYTHIC_PASSWORD=\"$(sudo ./mythic-cli config get MYTHIC_ADMIN_PASSWORD | grep MYTHIC_ADMIN_PASSWORD | awk '{print $2}')\"" | tee -a ~/.bashrc
+source ~/.bashrc
 
 # Install Go (needed for some agents)
 sudo apt install golang-go
@@ -105,19 +111,13 @@ sudo rm bloodhound-cli-linux-arm64.tar.gz
 ./bloodhound-cli install
 
 # Save the Bloodhound default password as an evironment variable "BLOODHOUND_PASSWORD"
-cat >> ~/.bashrc <<'EOF'
-export BLOODHOUND_PASSWORD="$(
-    ./bloodhound-cli config get default_password \
-    | awk '/DEFAULT_PASSWORD/ {print $NF}' \
-    | tr -d '\r\n'
-)"
-EOF
-.~/.bashrc
+echo "export BLOODHOUND_PASSWORD=\"$(sudo ./bloodhound-cli config get default_password | grep DEFAULT_PASSWORD | awk '{print $2}')\"" | tee -a ~/.bashrc
+source ~/.bashrc
 
 # Set Blood to bind to all interfaces and listen on port 8082
 sudo ./bloodhound-cli config set bind_addr 0.0.0.0:8082
 sudo ./bloodhound-cli config set root_url http://127.0.0.1:8082
-sudo sed -i 's|\${BLOODHOUND_HOST:-127.0.0.1}:\${BLOODHOUND_PORT:-8080}:8080}|\${BLOODHOUND_HOST:-0.0.0.0}:\${BLOODHOUND_PORT:-8082}:8082|' /root/.config/bloodhound/docker-compose.yml
+sudo sed -i 's|\${BLOODHOUND_HOST:-127\.0\.0\.1}:\${BLOODHOUND_PORT:-8080}:8080|\${BLOODHOUND_HOST:-0.0.0.0}:\${BLOODHOUND_PORT:-8082}:8082|' /root/.config/bloodhound/docker-compose.yml
 
 # Bring the containers down, force an update to the docker-compose.yml and then bring the containers back up
 sudo ./bloodhound-cli down
