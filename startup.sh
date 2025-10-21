@@ -73,6 +73,10 @@ cd Ghostwriter
 ./ghostwriter-cli-linux install
 sudo sed -i "s/^HASURA_GRAPHQL_SERVER_PORT='8080'/HASURA_GRAPHQL_SERVER_PORT='8078'/" .env
 
+# Update nginx ports in production.yml
+sudo sed -i 's|"0\.0\.0\.0:80:80"|"0.0.0.0:8083:80"|' production.yml && \
+sudo sed -i 's|"0\.0\.0\.0:443:443"|"0.0.0.0:7444:443"|' production.yml
+
 # Allow Ghostwriter to be accessible externally by any IP on the network
 sudo ./ghostwriter-cli-linux config allowhost 0.0.0.0
 # Allow the Host computer to be able to access the django server (I think - vandey told me to do this)
@@ -127,6 +131,6 @@ sudo ./bloodhound-cli up
 # Integrating Ghostwriter with Mythic
 ############################################################
 
-sudo ./mythic-cli mythic_sync install github https://github.com/GhostManager/mythic_sync
+#sudo ./mythic-cli mythic_sync install github https://github.com/GhostManager/mythic_sync
 # # Setting the Ghostwriter URL in mythic_sync .env to use the host's IP address
 # sudo sed -i "s|^GHOSTWRITER_URL=.*|GHOSTWRITER_URL=\"https://$(hostname -I | awk '{print $1}')\"|" .env
