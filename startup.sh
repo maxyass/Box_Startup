@@ -28,7 +28,8 @@ sudo ./mythic-cli install github https://github.com/MythicC2Profiles/smb
 sudo ./mythic-cli install github https://github.com/MythicAgents/Apollo
 sudo ./mythic-cli install github https://github.com/MythicAgents/merlin
 sudo ./mythic-cli install github https://github.com/MythicAgents/ghostwriter
-sudo ./mythic-cli mythic_sync install github https://github.com/GhostManager/mythic_sync
+sudo ./mythic-cli install github https://github.com/MythicAgents/bloodhound
+#sudo ./mythic-cli mythic_sync install github https://github.com/GhostManager/mythic_sync
 
 # Adjust Docker restart policy & rebuild settings
 sudo sed -i 's/restart: always/restart: on-failure:10/g' docker-compose.yml
@@ -115,9 +116,7 @@ echo "export BLOODHOUND_ADMIN_PASSWORD=\"$(sudo ./bloodhound-cli config get defa
 source ~/.bashrc
 
 # Set Blood to bind to all interfaces (externally accessible) and listen on port 8082
-sudo ./bloodhound-cli config set bind_addr 0.0.0.0:8082
-sudo ./bloodhound-cli config set root_url http://127.0.0.1:8082
-sudo sed -i 's|\${BLOODHOUND_HOST:-127\.0\.0\.1}:\${BLOODHOUND_PORT:-8080}:8080|\${BLOODHOUND_HOST:-0.0.0.0}:\${BLOODHOUND_PORT:-8082}:8082|' /root/.config/bloodhound/docker-compose.yml
+sudo sed -i 's|\${BLOODHOUND_HOST:-127\.0\.0\.1}:\${BLOODHOUND_PORT:-8080}:8080|\${BLOODHOUND_HOST:-0.0.0.0}:\${BLOODHOUND_PORT:-8082}:8080|' /root/.config/bloodhound/docker-compose.yml
 
 # Bring the containers down, force an update to the docker-compose.yml and then bring the containers back up
 sudo ./bloodhound-cli down
@@ -130,4 +129,4 @@ sudo ./bloodhound-cli up
 
 sudo ./mythic-cli mythic_sync install github https://github.com/GhostManager/mythic_sync
 # # Setting the Ghostwriter URL in mythic_sync .env to use the host's IP address
-# sudo sed -i "s|^GHOSTWRITER_URL=.*|GHOSTWRITER_URL=\"https://$(hostname -I | awk '{print $1}'):443\"|" .env
+# sudo sed -i "s|^GHOSTWRITER_URL=.*|GHOSTWRITER_URL=\"https://$(hostname -I | awk '{print $1}')\"|" .env
