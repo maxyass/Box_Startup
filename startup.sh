@@ -1,13 +1,8 @@
 ############################################################
-# Vim
+# Prerequisites
 ############################################################
 
 sudo apt install vim
-
-############################################################
-# Make
-############################################################
-
 sudo apt install make
 
 ############################################################
@@ -32,6 +27,8 @@ sudo ./mythic-cli install github https://github.com/MythicC2Profiles/smb
 # Install agents
 sudo ./mythic-cli install github https://github.com/MythicAgents/Apollo
 sudo ./mythic-cli install github https://github.com/MythicAgents/merlin
+sudo ./mythic-cli install github https://github.com/MythicAgents/ghostwriter
+sudo ./mythic-cli mythic_sync install github https://github.com/GhostManager/mythic_sync
 
 # Adjust Docker restart policy & rebuild settings
 sudo sed -i 's/restart: always/restart: on-failure:10/g' docker-compose.yml
@@ -45,7 +42,7 @@ sudo ./mythic-cli stop
 sudo ./mythic-cli start
 
 # Save the Mythic admin default password as an evironment variable "MYTHIC_PASSWORD"
-echo "export MYTHIC_PASSWORD=\"$(sudo ./mythic-cli config get MYTHIC_ADMIN_PASSWORD | grep MYTHIC_ADMIN_PASSWORD | awk '{print $2}')\"" | tee -a ~/.bashrc
+echo "export MYTHIC_ADMIN_PASSWORD=\"$(sudo ./mythic-cli config get MYTHIC_ADMIN_PASSWORD | grep MYTHIC_ADMIN_PASSWORD | awk '{print $2}')\"" | tee -a ~/.bashrc
 source ~/.bashrc
 
 # Install Go (needed for some agents)
@@ -85,6 +82,8 @@ mkdir -p ~/Mythic/ghostwriter_notes
 
 # (Optional) Create a starter README
 echo "# Mythic Operation Notes" > ~/Mythic/ghostwriter_notes/README.md
+echo "export GHOSTWRITER_ADMIN_PASSWORD=\"$(sudo ./ghostwriter-cli config get ADMIN_PASSWORD | grep ADMIN_PASSWORD | awk '{print $2}')\"" | tee -a ~/.bashrc
+
 
 # Alias to startup Ghostwriter with Mythic
 # echo 'alias mythic-notes="ghostwriter ~/Mythic/ghostwriter_notes/README.md &"' >> ~/.bashrc
@@ -95,6 +94,7 @@ sudo ./ghostwriter-cli-linux down
 sudo ./ghostwriter-cli-linux up
 
 cd ..
+
 
 ############################################################
 # 🩸 BloodHound CE
@@ -111,10 +111,10 @@ sudo rm bloodhound-cli-linux-arm64.tar.gz
 ./bloodhound-cli install
 
 # Save the Bloodhound default password as an evironment variable "BLOODHOUND_PASSWORD"
-echo "export BLOODHOUND_PASSWORD=\"$(sudo ./bloodhound-cli config get default_password | grep DEFAULT_PASSWORD | awk '{print $2}')\"" | tee -a ~/.bashrc
+echo "export BLOODHOUND_ADMIN_PASSWORD=\"$(sudo ./bloodhound-cli config get default_password | grep DEFAULT_PASSWORD | awk '{print $2}')\"" | tee -a ~/.bashrc
 source ~/.bashrc
 
-# Set Blood to bind to all interfaces and listen on port 8082
+# Set Blood to bind to all interfaces (externally accessible) and listen on port 8082
 sudo ./bloodhound-cli config set bind_addr 0.0.0.0:8082
 sudo ./bloodhound-cli config set root_url http://127.0.0.1:8082
 sudo sed -i 's|\${BLOODHOUND_HOST:-127\.0\.0\.1}:\${BLOODHOUND_PORT:-8080}:8080|\${BLOODHOUND_HOST:-0.0.0.0}:\${BLOODHOUND_PORT:-8082}:8082|' /root/.config/bloodhound/docker-compose.yml
@@ -124,14 +124,10 @@ sudo ./bloodhound-cli down
 sudo ./bloodhound-cli update
 sudo ./bloodhound-cli up
 
+############################################################
+# Integrating Ghostwriter with Mythic
+############################################################
 
-# Make Bloodhound accessible externally by modifying the .env file - NOT FUNCTIONAL YET
-#bloodhound-cli --server http://0.0.0.0:8080 --user neo4j --password $BLOODHOUND_PASSWORD
-
-# Alternative manual installation method (if needed) 
-# git clone https://github.com/SpecterOps/BloodHound.git
-# cd BloodHound/examples/docker-compose
-# cp docker-compose.yml docker-compose.bak
-# cp .env.example .env
-# sed -i 's/BLOODHOUND_HOST=127.0.0.1/BLOODHOUND_HOST=0.0.0.0/' .env
-# sudo docker compose up 
+sudo ./mythic-cli mythic_sync install github https://github.com/GhostManager/mythic_sync
+# # Setting the Ghostwriter URL in mythic_sync .env to use the host's IP address
+# sudo sed -i "s|^GHOSTWRITER_URL=.*|GHOSTWRITER_URL=\"https://$(hostname -I | awk '{print $1}'):443\"|" .env
