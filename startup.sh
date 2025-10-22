@@ -4,6 +4,7 @@
 
 sudo apt install vim
 sudo apt install make
+sudo apt install apache2
 
 ############################################################
 # 🚀 Mythic
